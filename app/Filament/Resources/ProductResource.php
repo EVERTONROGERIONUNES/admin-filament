@@ -13,9 +13,11 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+use PhpParser\Node\Stmt\Label;
 
 class ProductResource extends Resource
 {
@@ -45,13 +47,21 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('price')->money('BRL'),
+                TextColumn::make('name')->sortable()->searchable(),
+                TextColumn::make('price')->money('BRL')->searchable(),
                 TextColumn::make('amount'),
                 TextColumn::make('created_at')->date('d/m/y - H:i:s'),
             ])
             ->filters([
-                //
+                Filter::make('amount')
+                ->toggle()
+                ->label('Estoque inferior a 10')
+                ->query(fn (Builder $query) => $query->where('amount', '<', 10)),
+
+                Filter::make('price')
+                ->toggle()
+                ->label('Menor que R$ 100,00')
+                ->query(fn (Builder $query) => $query->where('price', '<', 10000)),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
