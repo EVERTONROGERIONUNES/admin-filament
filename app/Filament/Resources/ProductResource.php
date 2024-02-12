@@ -34,27 +34,45 @@ class ProductResource extends Resource
     //TROCA O NOME 
     protected static ?string $navigationLabel = 'Produtos';
 
+    //BUSCA GLOBAL
+    protected static ?string $recordTitleAttribute = 'name';
+
+
     public static function form(Form $form): Form
     {
-        return $form
+        return $form //->columns(3)
             ->schema([
-                TextInput::make('name')->required()
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, $set) {
-                        $state = Str::slug($state);
-                        $set('slug', $state);
-                    })
-                    ->label('Nome Produto'),
-                Textarea::make('description')->label('Descrição'),
-                TextInput::make('price')->required()->label('Preço'),
-                TextInput::make('amount')->required()->label('Quantidade'),
-                TextInput::make('slug')->disabled(),
-                FileUpload::make('photo')
-                    ->image()
-                    ->directory('products'),
+                //Forms\Components\Card::make('Dados 1')->schema([
+                // ou Forms\Components\Card::make([
+                // ou  Forms\Components\Tabs::make('Tabs')->tabs([
+                //Forms\Components\Tabs\Tab::make('Tab1')->schema([
+                Forms\Components\Wizard::make()->schema([
+                    Forms\Components\Wizard\Step::make('Tab1')->schema([
+                        TextInput::make('name')->required()
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, $set) {
+                                $state = Str::slug($state);
+                                $set('slug', $state);
+                            })
+                            ->label('Nome Produto'),
+                        Textarea::make('description')->label('Descrição'),
+                        TextInput::make('price')->required()->label('Preço'),
+                        ]),
 
-                Select::make('categories')->relationship('categories', 'name')->multiple()
+                        Forms\Components\Wizard\Step::make('Tab2')->schema([
+                        TextInput::make('amount')->required()->label('Quantidade'),
+                        TextInput::make('slug')->disabled(),
+                        FileUpload::make('photo')
+                            ->image()
+                            ->directory('products'),
+
+                        Select::make('categories')->relationship('categories', 'name')->multiple()
+                    ])
+                ])
+
             ]);
+        //])
+
     }
 
     public static function table(Table $table): Table

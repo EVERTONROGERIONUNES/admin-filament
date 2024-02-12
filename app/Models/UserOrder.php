@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +12,11 @@ class UserOrder extends Model
     use HasFactory;
 
     protected $withCount = ['items'];
+
+    public function orderTotal(): Attribute
+    {
+        return new Attribute(fn($attr) => $this->items->sum('order_value'));
+    }
 
     public function items()
     {

@@ -29,6 +29,9 @@ class UserResource extends Resource
     //TROCA O NOME 
     protected static ?string $navigationLabel = 'Usuários';
 
+    //BUSCA GLOBAL
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -106,5 +109,10 @@ class UserResource extends Resource
     protected static function getNavigationBadge(): ?string
     {
         return self::getModel()::count();
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name','email'];
     }
 }
