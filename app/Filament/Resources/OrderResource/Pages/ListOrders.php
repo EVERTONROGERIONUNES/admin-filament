@@ -5,6 +5,7 @@ namespace App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Contracts\View\View;
 
 class ListOrders extends ListRecords
 {
@@ -15,5 +16,10 @@ class ListOrders extends ListRecords
         return [
             Actions\CreateAction::make(),
         ];
+    }
+
+    protected function getTableContentFooter(): ?View
+    {
+        return view('filament.resources.orders.table.footer');
     }
 }
